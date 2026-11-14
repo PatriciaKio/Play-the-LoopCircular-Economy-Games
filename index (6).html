@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Play the Loop: Circular Economy Games, Refined</title>
+<meta name="description" content="Nine student-designed circular economy games, refined using peer feedback. Browse, like, and play a demo.">
+<style>
+  :root {
+    --bg: #f6f8f4;
+    --card: #ffffff;
+    --ink: #1d2a22;
+    --muted: #5b6b61;
+    --line: #dfe6df;
+    --green: #2f7d4f;
+    --green-soft: #e3f1e8;
+    --teal-soft: #e0f0f2;
+    --amber-soft: #fbf1dc;
+    --violet-soft: #ece8f7;
+    --red: #c0392b;
+    --red-soft: #fbe5e2;
+    --radius: 14px;
+    --shadow: 0 1px 2px rgba(0,0,0,.05), 0 4px 14px rgba(0,0,0,.05);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.55;
+  }
+  a { color: var(--green); }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+
+  /* Header */
+  header.hero {
+    background: linear-gradient(135deg, #1f5c3a, #2f7d4f 55%, #3d9a6a);
+    color: #fff;
+    padding: 56px 0 44px;
+  }
+  .hero h1 { font-size: clamp(2rem, 4vw, 2.9rem); margin: 0 0 10px; letter-spacing: -.02em; }
+  .hero p { max-width: 720px; margin: 0; font-size: 1.08rem; opacity: .93; }
+  .hero nav { margin-top: 22px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .hero nav a {
+    color: #fff; text-decoration: none; border: 1px solid rgba(255,255,255,.45);
+    padding: 8px 14px; border-radius: 999px; font-weight: 600; font-size: .93rem;
+  }
+  .hero nav a:hover { background: rgba(255,255,255,.14); }
+
+  section { padding: 40px 0 8px; }
+  h2 { font-size: 1.55rem; margin: 0 0 6px; letter-spacing: -.01em; }
+  .lead { color: var(--muted); margin: 0 0 20px; max-width: 760px; }
+
+  /* Feedback summary */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; }
+  .stat { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow); }
+  .stat b { display: block; font-size: 1.9rem; line-height: 1.1; color: var(--green); }
+  .stat span { color: var(--muted); font-size: .92rem; }
+  .themes { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-top: 18px; }
+  .theme { border-radius: var(--radius); padding: 16px 18px; border: 1px solid var(--line); }
+  .theme h3 { margin: 0 0 4px; font-size: 1.02rem; }
+  .theme p { margin: 0; font-size: .93rem; color: #34443a; }
+  .t-clarity { background: var(--teal-soft); }
+  .t-learning { background: var(--green-soft); }
+  .t-fair { background: var(--amber-soft); }
+  .t-age { background: var(--violet-soft); }
+
+  /* Toolbar */
+  .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 6px 0 18px; }
+  .chip {
+    border: 1px solid var(--line); background: var(--card); color: var(--ink);
+    padding: 7px 13px; border-radius: 999px; font: inherit; font-size: .9rem; cursor: pointer;
+  }
+  .chip[aria-pressed="true"] { background: var(--green); border-color: var(--green); color: #fff; }
+  .toolbar label { margin-left: auto; font-size: .9rem; color: var(--muted); }
+  .toolbar select { font: inherit; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--line); background: #fff; }
+
+  /* Game cards */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 18px; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 20px; display: flex; flex-direction: column;
+  }
+  .card h3 { margin: 0; font-size: 1.2rem; }
+  .meta { color: var(--muted); font-size: .88rem; margin: 4px 0 10px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .tag { font-size: .76rem; padding: 3px 9px; border-radius: 999px; background: #eef2ee; color: #3a4a40; }
+  .pitch { margin: 0 0 12px; font-size: .95rem; }
+  details { border-top: 1px solid var(--line); padding-top: 10px; margin-top: 4px; }
+  summary { cursor: pointer; font-weight: 600; font-size: .93rem; color: var(--green); }
+  .orig { font-size: .9rem; color: #3b4a41; margin: 8px 0 0; }
+  .changes { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 10px; }
+  .changes li { border-left: 4px solid var(--green); background: #fafcfa; padding: 9px 12px; border-radius: 0 10px 10px 0; font-size: .92rem; }
+  .changes li.clarity { border-color: #2a8c99; }
+  .changes li.learning { border-color: var(--green); }
+  .changes li.fair { border-color: #c98a12; }
+  .changes li.age { border-color: #6b55b5; }
+  .changes li.kept { border-color: #9aa59d; background: #f6f7f6; }
+  .why { display: block; margin-top: 4px; font-size: .78rem; color: var(--muted); }
+  .card-foot { margin-top: auto; padding-top: 16px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .like {
+    display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line);
+    background: #fff; padding: 7px 14px; border-radius: 999px; font: inherit; font-weight: 600; cursor: pointer;
+    transition: transform .12s ease, background .12s ease;
+  }
+  .like:hover { background: #fff5f4; }
+  .like:active { transform: scale(.95); }
+  .like svg { width: 18px; height: 18px; fill: none; stroke: var(--red); stroke-width: 2; }
+  .like[aria-pressed="true"] { background: var(--red-soft); border-color: #f0b8b0; }
+  .like[aria-pressed="true"] svg { fill: var(--red); }
+  .like.pop svg { animation: pop .35s ease; }
+  @keyframes pop { 50% { transform: scale(1.35); } }
+  .btn {
+    display: inline-block; text-decoration: none; background: var(--green); color: #fff; padding: 8px 14px;
+    border-radius: 999px; font-weight: 600; font-size: .9rem; border: 0; cursor: pointer; font-family: inherit;
+  }
+  .btn.ghost { background: transparent; color: var(--green); border: 1px solid var(--green); }
+  .empty { color: var(--muted); padding: 20px 0; }
+
+  /* Demo */
+  .demo { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 22px; }
+  .hud { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; font-weight: 600; margin-bottom: 16px; }
+  .hud .pill { background: #eef2ee; border-radius: 999px; padding: 6px 14px; }
+  .stage { text-align: center; padding: 22px 10px; border: 2px dashed var(--line); border-radius: var(--radius); min-height: 150px; }
+  .item-emoji { font-size: 3.6rem; line-height: 1; }
+  .item-name { font-size: 1.2rem; font-weight: 700; margin-top: 8px; }
+  .bins { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 16px; }
+  .bin {
+    border: 2px solid transparent; border-radius: 12px; padding: 14px 6px; font: inherit; font-weight: 700;
+    cursor: pointer; color: #1d2a22; display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .bin span { font-size: 1.6rem; }
+  .bin small { font-weight: 500; font-size: .74rem; color: #3b4a41; }
+  .bin:disabled { opacity: .55; cursor: not-allowed; }
+  .b-paper { background: #dfeefc; } .b-plastic { background: #fff3c4; } .b-glass { background: #dcf3e4; }
+  .b-metal { background: #e6e6ea; } .b-trash { background: #f3e3dc; }
+  .bin.hint { border-color: var(--green); box-shadow: 0 0 0 4px rgba(47,125,79,.25); animation: glow 1.2s ease-in-out infinite; }
+  @keyframes glow { 50% { box-shadow: 0 0 0 8px rgba(47,125,79,.12); } }
+  .explain {
+    margin-top: 16px; border-radius: 12px; padding: 14px 16px; background: var(--red-soft); border: 1px solid #f0c2bb;
+    display: none; text-align: left;
+  }
+  .explain.show { display: block; }
+  .explain.good { background: var(--green-soft); border-color: #bfe0cb; }
+  .explain h4 { margin: 0 0 4px; }
+  .explain p { margin: 0 0 10px; }
+  .results { margin-top: 16px; display: none; }
+  .results.show { display: block; }
+  .results ul { padding-left: 18px; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  footer { margin-top: 48px; padding: 28px 0 40px; border-top: 1px solid var(--line); color: var(--muted); font-size: .9rem; }
+
+  @media (max-width: 640px) {
+    .bins { grid-template-columns: repeat(3, 1fr); }
+    .toolbar label { margin-left: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  }
+  :focus-visible { outline: 3px solid #f2b705; outline-offset: 2px; }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <h1>Play the Loop</h1>
+    <p>Nine student-designed games about the circular economy, with refined rules based on a sentiment analysis of classmates' feedback. Browse the games, like the ones you'd play, and try the refined Recycling Rush demo.</p>
+    <nav aria-label="Page sections">
+      <a href="#feedback">What the feedback said</a>
+      <a href="#games">The games</a>
+      <a href="#demo">Play the demo</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section id="feedback" aria-labelledby="fb-title">
+    <h2 id="fb-title">What the feedback said</h2>
+    <p class="lead">We analyzed 10 peer comments. None were negative, and most combined praise with one specific suggestion. The suggestions fell into four themes, and each refinement below is labeled with the theme it addresses.</p>
+    <div class="stats">
+      <div class="stat"><b>10</b><span>peer comments analyzed</span></div>
+      <div class="stat"><b>80%</b><span>positive (1 pure praise, 7 praise + suggestion)</span></div>
+      <div class="stat"><b>0</b><span>negative comments (1 mixed, 1 neutral)</span></div>
+      <div class="stat"><b>Upcycling</b><span>the most-praised topic (4 comments)</span></div>
+    </div>
+    <div class="themes">
+      <div class="theme t-clarity"><h3>Clarity &amp; visual cues</h3><p>Make trades, steps and choices obvious to first-time players. (3 comments)</p></div>
+      <div class="theme t-learning"><h3>Learning built into play</h3><p>Explain mistakes as they happen and put short facts on cards. (2 comments)</p></div>
+      <div class="theme t-fair"><h3>Fairer mechanics &amp; decision rules</h3><p>Allow partial progress and give groups a way to settle disagreements. (2 comments)</p></div>
+      <div class="theme t-age"><h3>Age-appropriate language</h3><p>Keep words and concepts at the right level for the audience. (1 comment)</p></div>
+    </div>
+  </section>
+
+  <section id="games" aria-labelledby="games-title">
+    <h2 id="games-title">The games</h2>
+    <p class="lead">Each card shows the original rules and the refined logic. Refinements tied to a specific peer comment show its number. The others apply a theme from the feedback as a whole. Rules the reviewers praised are marked <em>kept</em>.</p>
+    <div class="toolbar" role="group" aria-label="Filter games by feedback theme">
+      <button class="chip" data-filter="all" aria-pressed="true">All games</button>
+      <button class="chip" data-filter="clarity" aria-pressed="false">Clarity</button>
+      <button class="chip" data-filter="learning" aria-pressed="false">Learning in play</button>
+      <button class="chip" data-filter="fair" aria-pressed="false">Fairer mechanics</button>
+      <button class="chip" data-filter="age" aria-pressed="false">Age-appropriate</button>
+      <label>Sort
+        <select id="sort">
+          <option value="default">Default order</option>
+          <option value="likes">Most liked</option>
+          <option value="az">A to Z</option>
+        </select>
+      </label>
+    </div>
+    <div class="grid" id="grid" aria-live="polite"></div>
+  </section>
+
+  <section id="demo" aria-labelledby="demo-title">
+    <h2 id="demo-title">Play the demo: Recycling Rush, refined</h2>
+    <p class="lead">This demo applies feedback comment #1: when you sort something into the wrong bin, the game tells you why straight away and pauses the clock while you read. Next time that item appears, the correct bin glows once. Rules vary by city, so check what your local service accepts.</p>
+    <div class="demo">
+      <div class="hud">
+        <span class="pill">Score: <span id="score">0</span></span>
+        <span class="pill">Time: <span id="time">45</span>s</span>
+        <span class="pill">Sorted: <span id="sorted">0</span></span>
+        <button class="btn" id="start">Start game</button>
+      </div>
+      <div class="stage" id="stage">
+        <div class="item-emoji" id="itemEmoji" aria-hidden="true">♻️</div>
+        <div class="item-name" id="itemName">Press Start, then pick the right bin for each item.</div>
+      </div>
+      <div class="bins" id="bins" role="group" aria-label="Recycling bins">
+        <button class="bin b-paper" data-bin="paper" disabled><span aria-hidden="true">📰</span>Paper<small>paper &amp; card</small></button>
+        <button class="bin b-plastic" data-bin="plastic" disabled><span aria-hidden="true">🧴</span>Plastic<small>bottles &amp; tubs</small></button>
+        <button class="bin b-glass" data-bin="glass" disabled><span aria-hidden="true">🫙</span>Glass<small>jars &amp; bottles</small></button>
+        <button class="bin b-metal" data-bin="metal" disabled><span aria-hidden="true">🥫</span>Metal<small>cans &amp; tins</small></button>
+        <button class="bin b-trash" data-bin="trash" disabled><span aria-hidden="true">🚫</span>Not here<small>trash or drop-off</small></button>
+      </div>
+      <div class="explain" id="explain" role="alert">
+        <h4 id="exTitle"></h4>
+        <p id="exText"></p>
+        <button class="btn" id="exOk">Got it, keep going</button>
+      </div>
+      <div class="results" id="results" aria-live="polite"></div>
+      <div class="sr" id="live" aria-live="polite"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Game concepts were designed by students. The refinements are proposals based on peer feedback. Environmental scores in these games are teaching models, not life-cycle assessments.</p>
+    <p>Likes are saved in your browser unless the site owner connects a shared counter (see the README).</p>
+  </div>
+</footer>
+
+<script>
+/* ---------------------------------------------------------------
+   OPTIONAL: shared like counts.
+   GitHub Pages is static, so by default likes are saved in each
+   visitor's browser (localStorage). To show totals from everyone,
+   set LIKES_API to an endpoint that supports:
+     GET  {LIKES_API}            -> {"game-id": 12, ...}
+     POST {LIKES_API}/{id}/like  -> {"count": 13}
+     POST {LIKES_API}/{id}/unlike-> {"count": 12}
+   See README.md for details.
+---------------------------------------------------------------- */
+const LIKES_API = ""; // e.g. "https://your-worker.example.workers.dev/likes"
+
+const THEME_LABEL = {
+  clarity: "Clarity & visual cues",
+  learning: "Learning built into play",
+  fair: "Fairer mechanics",
+  age: "Age-appropriate",
+  kept: "Kept (praised by reviewers)"
+};
+
+const GAMES = [
+  {
+    id: "recycling-rush",
+    title: "Recycling Rush",
+    meta: "Digital · single player · elementary students and up",
+    topics: ["Recycling & sorting"],
+    pitch: "Aim and throw paper, plastic, glass and metal into the right bins before the clock runs out.",
+    original: "60 seconds to sort items into four bins. +10 for a correct sort, −5 for a wrong one, 0 for a miss. One explanation appears at the end, chosen by your score band.",
+    changes: [
+      { theme: "learning", text: "A wrong sort shows an instant \"why\" card, for example: grease spoils recycled paper. The timer pauses while you read it.", why: "Feedback #1: add an explanation when something is sorted incorrectly" },
+      { theme: "learning", text: "Next time that item appears, the correct bin glows once, so you learn from the mistake and then try again.", why: "Feedback #1" },
+      { theme: "clarity", text: "A fifth bin, Not here (trash or drop-off), plus tricky items such as pizza boxes, plastic bags and coffee cups, to teach contamination.", why: "Cross-cutting theme: clarity" },
+      { theme: "learning", text: "The end screen lists your most-missed items with a fact for each, not just a score band.", why: "Cross-cutting theme: learning in play" },
+      { theme: "kept", text: "Kept: the time limit and the variety of materials.", why: "Praised in feedback #1" }
+    ],
+    demo: true
+  },
+  {
+    id: "close-the-loop-cards",
+    title: "Close the Loop! (card game)",
+    meta: "Card game · 2–4 players · ages 11–18",
+    topics: ["Closed loops", "Waste & landfill avoidance", "Material flows"],
+    pitch: "Turn your take-make-waste board into a closed loop by drawing, trading and placing process cards.",
+    original: "Draw a card, place one on your board, request a blind or direct trade, optionally play an action card, or discard a card and skip your next turn. The first player to complete their board wins.",
+    changes: [
+      { theme: "clarity", text: "Trade icons on every player board: an open eye for a direct trade (can be declined) and a closed eye for a blind trade (cannot be declined). A six-step turn strip is printed along the bottom of the board.", why: "Feedback #2: clearer visual cues for direct and blind trades" },
+      { theme: "learning", text: "Every resource and process card names the linear step it replaces and carries a one-line fact. A printable starter set of example cards is included.", why: "Feedback #3: example cards and a short fact on each card" },
+      { theme: "clarity", text: "Board slots are joined by flow arrows that switch from grey (linear) to green (loop) as you fill them, so you can see the material flow.", why: "Feedback #8: material flows are an often-overlooked part of circularity" },
+      { theme: "fair", text: "New Industrial Symbiosis action card: both players show their hands and swap byproducts openly, then each draws one bonus card. This rewards cooperation without removing competition.", why: "Designer's own note plus the collaboration theme" },
+      { theme: "kept", text: "Kept: the discard-and-skip-turn penalty. Discards now go to a face-up Landfill pile, and its size is read out at the end.", why: "Praised in feedback #2 and #3" }
+    ]
+  },
+  {
+    id: "build-a-well",
+    title: "Let's Build a Well (Vol. 1: Water)",
+    meta: "Co-op board game · 3–6 players · families with children 8+",
+    topics: ["Upcycling / repurposing", "Collaboration & community", "Closed loops"],
+    pitch: "Neighbors pool their energy, skills and scrap objects to build a low-tech water well before the drought hits.",
+    original: "Over four weeks, complete four major projects. Each needs 3 Progress Bricks by Sunday, or all the Energy and scrap invested in it is lost. Challenges can be solved through a Skill, an Object, or Raw Energy.",
+    changes: [
+      { theme: "fair", text: "Salvage replaces all-or-nothing. An unfinished project keeps 1 brick into the next week and returns half its scrap cards (rounded down) to a shared Salvage pile. Spent Energy is still lost and Morale drops by 1, so the lesson about not scattering effort stays.", why: "Feedback #5: partial progress or recovering materials" },
+      { theme: "fair", text: "Village Council rule. When players disagree on priorities, each household places one vote token. A tie is broken by whoever holds the rotating Elder token, who explains the choice in one sentence.", why: "Feedback #4: how players decide which project to prioritize" },
+      { theme: "learning", text: "Recipe cards link the scrap to its function with a real-world note, for example: a charcoal-and-sand bottle filter removes particles, but water still needs boiling or disinfecting.", why: "Cross-cutting theme: learning in play" },
+      { theme: "kept", text: "Kept: no buying new raw materials, characters with different skills, and three ways to solve each challenge.", why: "Praised in feedback #4 and #6" }
+    ]
+  },
+  {
+    id: "close-the-loop-furniture",
+    title: "Close the Loop (furniture business)",
+    meta: "Digital · single player · high school, college and beginners",
+    topics: ["Upcycling / repurposing", "Waste & landfill avoidance", "Closed loops"],
+    pitch: "Run a small used-furniture business for five rounds: repair, rent, take back, dismantle, recycle or landfill.",
+    original: "Start with $50. To win, finish with at least $50 and 12 circularity points. You lose if cash drops below $0. Score = cash + 5 × circularity points.",
+    changes: [
+      { theme: "clarity", text: "Each strategy button previews its cash change, circularity points and any future costs before you choose.", why: "Cross-cutting theme: clarity" },
+      { theme: "learning", text: "An on-screen waste-hierarchy ladder (rent or repair > take-back > dismantle > recycle > landfill) highlights where each choice sits.", why: "Cross-cutting theme: learning in play" },
+      { theme: "fair", text: "A near-miss end screen shows how close you came to $50 and 12 points, and which round cost you most.", why: "Cross-cutting theme: fairer mechanics" }
+    ]
+  },
+  {
+    id: "furniture-rescue-race",
+    title: "Furniture Rescue Race",
+    meta: "Digital · single player · casual players and students",
+    topics: ["Upcycling / repurposing", "Waste & landfill avoidance"],
+    pitch: "Collect and repair used furniture parts to complete stool, chair, table, bench and bookshelf orders.",
+    original: "Repairs are free. Buying a part costs 8 coins and +20 impact; discarding adds +10 impact. Relaxed Mode: deliver five orders. Challenge Mode: reach 60 points in 120 seconds with impact under 100.",
+    changes: [
+      { theme: "fair", text: "Relaxed Mode awards 1–3 stars based on final impact, so the environmental outcome counts even without a loss condition.", why: "The designer's own planned improvement" },
+      { theme: "clarity", text: "When the bag is full, unneeded parts are highlighted and Return to map (0 impact) is suggested before Discard.", why: "Cross-cutting theme: clarity" },
+      { theme: "learning", text: "Each delivery shows a short fact about what was saved, for example: this chair kept its wood, metal and foam in use.", why: "Cross-cutting theme: learning in play" },
+      { theme: "kept", text: "Kept: the numbered repair instructions added after playtesting.", why: "Playtester said repair became much clearer" }
+    ]
+  },
+  {
+    id: "scrap-to-scale",
+    title: "Scrap to Scale",
+    meta: "Digital · single player · college students and beginners",
+    topics: ["Closed loops", "Material flows", "Upcycling / repurposing"],
+    pitch: "Run a manufacturing company for ten rounds, choosing between virgin and reclaimed inputs and trading scrap with partners.",
+    original: "Win with a profit and a loop score of at least 60%. Partial outcomes are possible: profitable but linear, or circular but unprofitable. The designer's playtester didn't grasp the impact of choices until the end of round 1.",
+    changes: [
+      { theme: "clarity", text: "A guided Round 0 with fixed numbers, where arrows point at each step's What happened and Key idea panels before real play starts.", why: "Playtest note: didn't understand how the game worked until after round 1" },
+      { theme: "learning", text: "The loop-score ring is split into slices (reclaimed input, products returned, scrap traded), so you can see which choice moved it.", why: "Cross-cutting theme: learning in play" },
+      { theme: "kept", text: "Kept: the partial outcomes, now named on the end screen with one tip for reaching Circular business.", why: "They reflect the real need to be both circular and profitable" }
+    ]
+  },
+  {
+    id: "build-recover-rebuild",
+    title: "Build, Recover, Rebuild!",
+    meta: "Board game · 2–4 players · high school to college",
+    topics: ["Upcycling / repurposing", "Closed loops", "Waste & landfill avoidance"],
+    pitch: "Develop a city of circular buildings using a shared material bank, recovered components and design for disassembly.",
+    original: "Start with 20 credits. Roll a three-sided die for a new project, a renovation or a roadblock. Buy recovered or virgin materials and construction methods, and earn circularity points.",
+    changes: [
+      { theme: "clarity", text: "Material passport cards: each recovered token shows its source, condition grade (A/B/C) and allowed uses, turning missing information into a visible part of play.", why: "Cross-cutting theme: clarity" },
+      { theme: "fair", text: "Grade-C material needs 1 credit of refurbishment before use. Bolted (design-for-disassembly) buildings return grade-A material when renovated later, rewarding planning ahead.", why: "Cross-cutting theme: fairer mechanics" },
+      { theme: "fair", text: "A shared city waste target sits alongside individual scores. If it's missed, every player loses 3 points.", why: "Collaboration theme (praised in feedback #4–#6)" }
+    ]
+  },
+  {
+    id: "tim-the-builder",
+    title: "Tim the Builder",
+    meta: "Digital · single player · E for Everyone",
+    topics: ["Recycling & sorting", "Material flows"],
+    pitch: "Help Tim build a house with as much recycled material and as little virgin material as possible.",
+    original: "Recycled content is measured by mass using the A1–A3 production-stage formula. Using 50% or more virgin material loses; 100% recycled content is the best result.",
+    changes: [
+      { theme: "age", text: "Two reading levels. Kids mode explains recycled content as how much of the house is made from old stuff; Expert mode keeps the A1–A3 mass formula.", why: "Theme from feedback #9: words and concepts can be too advanced for kids" },
+      { theme: "fair", text: "Bronze, Silver and Gold replace a single 50% cliff: under 50% virgin is Bronze, 25% or less is Silver, and 0% with suitable materials is Gold. 50% or more still loses.", why: "Cross-cutting theme: fairer mechanics" },
+      { theme: "learning", text: "When you place a virgin material, a hint shows which recycled alternative suits that part of the house.", why: "Cross-cutting theme: learning in play" }
+    ]
+  },
+  {
+    id: "second-life",
+    title: "Second Life: The Circular Construction Challenge",
+    meta: "Digital · single player · intro students · 5–8 minutes",
+    topics: ["Closed loops", "Upcycling / repurposing", "Waste & landfill avoidance"],
+    pitch: "Replace six building modules and discover that today's bonding or fastener choice comes back two rounds later.",
+    original: "Start with 15 credits and two inherited bonded modules. Win by completing six contracts with no negative budget, at most 6 new raw-material units and at most 6 landfill units.",
+    changes: [
+      { theme: "clarity", text: "A Future you preview: when you choose bonding or fasteners, the game shows what that module will return when it's retired.", why: "Cross-cutting theme: clarity" },
+      { theme: "fair", text: "A one-time Retrofit grant of 3 credits if you can't afford any build, so new learners aren't stuck on their first try.", why: "Cross-cutting theme: fairer mechanics" },
+      { theme: "kept", text: "Kept: the inherited bonded modules that start you with some material loss.", why: "This is the core cause-and-effect lesson" }
+    ]
+  }
+];
+
+/* ---------------- Likes ---------------- */
+const LS_KEY = "playTheLoop.likes.v1";
+let liked = {};
+try { liked = JSON.parse(localStorage.getItem(LS_KEY) || "{}") || {}; } catch (e) { liked = {}; }
+let remoteCounts = {};
+
+function saveLikes() { try { localStorage.setItem(LS_KEY, JSON.stringify(liked)); } catch (e) {} }
+function countFor(id) {
+  if (LIKES_API) return remoteCounts[id] || 0;
+  return liked[id] ? 1 : 0;
+}
+
+async function loadRemote() {
+  if (!LIKES_API) return;
+  try {
+    const r = await fetch(LIKES_API);
+    if (r.ok) { remoteCounts = await r.json(); render(); }
+  } catch (e) { /* keep local only */ }
+}
+
+async function toggleLike(id, btn) {
+  const nowLiked = !liked[id];
+  liked[id] = nowLiked;
+  if (!nowLiked) delete liked[id];
+  saveLikes();
+  if (LIKES_API) {
+    remoteCounts[id] = Math.max(0, (remoteCounts[id] || 0) + (nowLiked ? 1 : -1));
+    try {
+      const r = await fetch(`${LIKES_API}/${encodeURIComponent(id)}/${nowLiked ? "like" : "unlike"}`, { method: "POST" });
+      if (r.ok) { const d = await r.json(); if (typeof d.count === "number") remoteCounts[id] = d.count; }
+    } catch (e) {}
+  }
+  updateLikeButton(btn, id);
+  if (nowLiked) { btn.classList.remove("pop"); void btn.offsetWidth; btn.classList.add("pop"); }
+  if (sortMode === "likes") render();
+}
+
+function updateLikeButton(btn, id) {
+  const on = !!liked[id];
+  const n = countFor(id);
+  btn.setAttribute("aria-pressed", on ? "true" : "false");
+  btn.querySelector(".count").textContent = LIKES_API ? n : (on ? "Liked" : "Like");
+  btn.setAttribute("aria-label", (on ? "Unlike " : "Like ") + GAMES.find(g => g.id === id).title + (LIKES_API ? ` (${n} likes)` : ""));
+}
+
+/* ---------------- Render cards ---------------- */
+let filter = "all";
+let sortMode = "default";
+const grid = document.getElementById("grid");
+
+function el(tag, cls, text) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text != null) e.textContent = text;
+  return e;
+}
+
+function render() {
+  let list = GAMES.filter(g => filter === "all" || g.changes.some(c => c.theme === filter));
+  if (sortMode === "likes") list = [...list].sort((a, b) => (countFor(b.id) - countFor(a.id)) || (!!liked[b.id] - !!liked[a.id]));
+  if (sortMode === "az") list = [...list].sort((a, b) => a.title.localeCompare(b.title));
+  grid.innerHTML = "";
+  if (!list.length) { grid.appendChild(el("p", "empty", "No games match this filter.")); return; }
+
+  for (const g of list) {
+    const card = el("article", "card");
+    card.id = "game-" + g.id;
+    card.appendChild(el("h3", null, g.title));
+    card.appendChild(el("div", "meta", g.meta));
+    const tags = el("div", "tags");
+    g.topics.forEach(t => tags.appendChild(el("span", "tag", t)));
+    card.appendChild(tags);
+    card.appendChild(el("p", "pitch", g.pitch));
+
+    const det = document.createElement("details");
+    det.open = filter !== "all";
+    det.appendChild(el("summary", null, `Refined logic (${g.changes.length} changes)`));
+    const orig = el("p", "orig");
+    orig.appendChild(el("strong", null, "Original: "));
+    orig.appendChild(document.createTextNode(g.original));
+    det.appendChild(orig);
+    const ul = el("ul", "changes");
+    for (const c of g.changes) {
+      const li = el("li", c.theme);
+      li.appendChild(el("strong", null, THEME_LABEL[c.theme] + ": "));
+      li.appendChild(document.createTextNode(c.text));
+      li.appendChild(el("span", "why", c.why));
+      ul.appendChild(li);
+    }
+    det.appendChild(ul);
+    card.appendChild(det);
+
+    const foot = el("div", "card-foot");
+    const like = el("button", "like");
+    like.type = "button";
+    like.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.1C.9 8.6 3 5 6.6 5c2 0 3.4 1.1 4.4 2.5C12 6.1 13.4 5 15.4 5 19 5 21.1 8.6 19.6 11.9 17.5 16.4 12 21 12 21z"/></svg><span class="count"></span>';
+    updateLikeButton(like, g.id);
+    like.addEventListener("click", () => toggleLike(g.id, like));
+    foot.appendChild(like);
+    if (g.demo) {
+      const a = el("a", "btn", "Play refined demo");
+      a.href = "#demo";
+      foot.appendChild(a);
+    }
+    if (g.link) {
+      const a = el("a", "btn ghost", "Play original ↗");
+      a.href = g.link; a.target = "_blank"; a.rel = "noopener";
+      foot.appendChild(a);
+    }
+    card.appendChild(foot);
+    grid.appendChild(card);
+  }
+}
+
+document.querySelectorAll(".chip").forEach(chip => {
+  chip.addEventListener("click", () => {
+    filter = chip.dataset.filter;
+    document.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed", c === chip ? "true" : "false"));
+    render();
+  });
+});
+document.getElementById("sort").addEventListener("change", e => { sortMode = e.target.value; render(); });
+
+render();
+loadRemote();
+
+/* ---------------- Recycling Rush demo ---------------- */
+const ITEMS = [
+  { id: "news", name: "Newspaper", emoji: "📰", bin: "paper", fact: "Clean, dry paper is pulped and made into new paper and card." },
+  { id: "box", name: "Flattened cardboard box", emoji: "📦", bin: "paper", fact: "Cardboard is one of the most recycled materials. Flatten it to save space in the truck." },
+  { id: "pizza", name: "Greasy pizza box", emoji: "🍕", bin: "trash", fact: "Grease soaks into the fibers and can spoil a batch of recycled paper. Many places ask you to compost it or bin it, so check local rules." },
+  { id: "bottle", name: "Plastic drink bottle", emoji: "🧴", bin: "plastic", fact: "PET bottles can be recycled into new bottles or polyester fiber. Empty them first." },
+  { id: "bag", name: "Plastic shopping bag", emoji: "🛍️", bin: "trash", fact: "Thin bags tangle sorting machines. Take clean bags to a store drop-off instead of the curbside bin." },
+  { id: "jar", name: "Glass jam jar", emoji: "🫙", bin: "glass", fact: "Glass jars and bottles can be melted and remade many times." },
+  { id: "mirror", name: "Broken drinking glass", emoji: "🥛", bin: "trash", fact: "Drinking glasses and mirrors melt at a different temperature from jars and bottles, so they can ruin a batch of recycled glass. Wrap them and put them in the trash." },
+  { id: "can", name: "Aluminum soda can", emoji: "🥤", bin: "metal", fact: "Aluminum can be recycled again and again without losing quality." },
+  { id: "tin", name: "Steel food can", emoji: "🥫", bin: "metal", fact: "Steel cans are separated with magnets and melted into new steel." },
+  { id: "cup", name: "Paper coffee cup", emoji: "☕", bin: "trash", fact: "Most paper cups have a thin plastic lining that standard paper mills can't separate." }
+];
+const BIN_NAME = { paper: "Paper", plastic: "Plastic", glass: "Glass", metal: "Metal", trash: "Not here (trash or drop-off)" };
+
+const $ = id => document.getElementById(id);
+const binButtons = [...document.querySelectorAll(".bin")];
+let score = 0, timeLeft = 45, sortedCount = 0, timer = null, paused = false, current = null, lastId = null;
+let misses = {}, hintFor = new Set(), running = false;
+
+function setBins(enabled) { binButtons.forEach(b => b.disabled = !enabled); }
+function clearHints() { binButtons.forEach(b => b.classList.remove("hint")); }
+
+function nextItem() {
+  let pick;
+  do { pick = ITEMS[Math.floor(Math.random() * ITEMS.length)]; } while (pick.id === lastId);
+  current = pick; lastId = pick.id;
+  $("itemEmoji").textContent = pick.emoji;
+  $("itemName").textContent = pick.name;
+  clearHints();
+  if (hintFor.has(pick.id)) {
+    binButtons.find(b => b.dataset.bin === pick.bin).classList.add("hint");
+    hintFor.delete(pick.id);
+    $("live").textContent = `${pick.name}. Hint: the correct bin is glowing.`;
+  } else {
+    $("live").textContent = pick.name;
+  }
+}
+
+function tick() {
+  if (paused) return;
+  timeLeft--;
+  $("time").textContent = timeLeft;
+  if (timeLeft <= 0) endGame();
+}
+
+function startGame() {
+  score = 0; timeLeft = 45; sortedCount = 0; misses = {}; hintFor = new Set(); paused = false; running = true;
+  $("score").textContent = 0; $("time").textContent = 45; $("sorted").textContent = 0;
+  $("results").className = "results"; $("results").innerHTML = "";
+  $("explain").className = "explain";
+  $("start").textContent = "Restart";
+  setBins(true);
+  nextItem();
+  clearInterval(timer);
+  timer = setInterval(tick, 1000);
+}
+
+function choose(bin) {
+  if (!running || paused || !current) return;
+  sortedCount++;
+  $("sorted").textContent = sortedCount;
+  if (bin === current.bin) {
+    score += 10;
+    $("score").textContent = score;
+    $("live").textContent = "Correct! +10";
+    nextItem();
+  } else {
+    score -= 5;
+    $("score").textContent = score;
+    misses[current.id] = (misses[current.id] || 0) + 1;
+    hintFor.add(current.id);
+    paused = true;
+    setBins(false);
+    $("exTitle").textContent = `Not quite: ${current.name} goes in ${BIN_NAME[current.bin]} (−5)`;
+    $("exText").textContent = `Why: ${current.fact} The clock is paused while you read.`;
+    $("explain").className = "explain show";
+    $("exOk").focus();
+  }
+}
+
+function resume() {
+  $("explain").className = "explain";
+  paused = false;
+  setBins(true);
+  nextItem();
+  binButtons[0].focus();
+}
+
+function endGame() {
+  clearInterval(timer);
+  running = false; paused = false;
+  setBins(false); clearHints();
+  $("explain").className = "explain";
+  $("itemEmoji").textContent = "🏁";
+  $("itemName").textContent = `Time's up! Final score: ${score}`;
+  let band;
+  if (score < 50) band = "Every wrong item can contaminate a whole batch of recycling and send it to landfill. Try again: the hints will help.";
+  else if (score < 150) band = "Nice work. Correctly sorted materials become new products: cans become cans, and paper becomes new card.";
+  else band = "Excellent! Good sorting means more recycled material and less demand for raw materials.";
+  const box = $("results");
+  box.innerHTML = "";
+  box.appendChild(el("h3", null, "Your results"));
+  box.appendChild(el("p", null, band));
+  const missed = Object.entries(misses).sort((a, b) => b[1] - a[1]).slice(0, 3);
+  if (missed.length) {
+    box.appendChild(el("p", null, "Your most-missed items:"));
+    const ul = el("ul");
+    missed.forEach(([id, n]) => {
+      const it = ITEMS.find(i => i.id === id);
+      const li = el("li");
+      li.appendChild(el("strong", null, `${it.name} → ${BIN_NAME[it.bin]}`));
+      li.appendChild(document.createTextNode(` (missed ${n}×). ${it.fact}`));
+      ul.appendChild(li);
+    });
+    box.appendChild(ul);
+  } else if (sortedCount > 0) {
+    box.appendChild(el("p", null, "No mistakes at all. You're a sorting pro!"));
+  }
+  box.className = "results show";
+}
+
+$("start").addEventListener("click", startGame);
+$("exOk").addEventListener("click", resume);
+binButtons.forEach(b => b.addEventListener("click", () => choose(b.dataset.bin)));
+document.addEventListener("keydown", e => {
+  if (!running) return;
+  if (paused && (e.key === "Enter" || e.key === " ")) { if (document.activeElement !== $("exOk")) { e.preventDefault(); resume(); } return; }
+  const map = { "1": "paper", "2": "plastic", "3": "glass", "4": "metal", "5": "trash" };
+  if (map[e.key]) choose(map[e.key]);
+});
+</script>
+</body>
+</html>
